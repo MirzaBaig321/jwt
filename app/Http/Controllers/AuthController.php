@@ -1,35 +1,8 @@
-# JWT with Laravel Sanctum
+<?php
 
+namespace App\Http\Controllers;
 
-
-## 1st Step.
-###### [Refrence Laravel Sanctum](https://laravel.com/docs/8.x/sanctum)
-> Install Laravel Sanctum `composer require laravel/sanctum`
-
-> Then run the command `php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"`
-
-It will create a file in config/sanctum.php
-
-## 2nd Step.
-> Run Migration `php artisan migrate`
-
-> Run the command `php artisan make:controller AuthController`
-
-> Paste the codes in User Model `use HasApiTokens` also add this on before class define `use Laravel\Sanctum\HasApiTokens;`
-
-![image](https://user-images.githubusercontent.com/54832640/177614692-ff29e4c4-6f86-4d72-ab06-08c68fd15511.png)
-
-It should be look like this.
-
-## 3rd Step.
-> Paste the below code in **AuthController.php**
-Paset these lines before defining **class**
-
-
-
-```
 use App\Models\User;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
@@ -102,38 +75,3 @@ class AuthController extends Controller
         ])->withCookie($cookie);
     }
 }
-```
-
-## 4th step.
-> Open config/cors.php and find `supports_credentials' => false` and make this **false** to **true**.
-
-## 5th step.
-> Open app/Http/Middleware and paste the below codes after **redirectTo** function.
-```
-use Closure;
-public function handle($request, Closure $next, ...$guards)
-{
-    if ($jwt = $request->cookie('jwt')) {
-        $request->headers->set('Authorization', 'Bearer ' . $jwt);
-    }
-    $this->authenticate($request, $guards);
-
-    return $next($request);
-}
-```
-## 6th step.
-> Add the below codes in api.php.
-
-```
-Route::post('/register', [App\Http\ControllersAuthController::class, 'register']);
-Route::post('/login', [App\Http\ControllersAuthController::class, 'login']);
-
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/user', function () {
-            return App\Models\User::all();
-    });
-
-    Route::post('/logout', [App\Http\ControllersAuthController::class, 'logout']);
-});
-```
-Try with Postman.
