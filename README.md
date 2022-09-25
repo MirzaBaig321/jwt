@@ -125,15 +125,15 @@ public function handle($request, Closure $next, ...$guards)
 > Add the below codes in api.php.
 
 ```
-Route::post('/register', [App\Http\ControllersAuthController::class, 'register']);
-Route::post('/login', [App\Http\ControllersAuthController::class, 'login']);
+Route::post('/register', [App\Http\Controllers\AuthController::class, 'register']);
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', function () {
             return App\Models\User::all();
     });
 
-    Route::post('/logout', [App\Http\ControllersAuthController::class, 'logout']);
+    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
 });
 ```
 Try with Postman.
